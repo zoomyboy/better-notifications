@@ -1,15 +1,42 @@
 <?php
 
-namespace Zoomyyboy\BetterNotifications;
+namespace Zoomyboy\BetterNotifications;
 
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\MailMessage as BaseMailMessage;
 
-class MailMessage extends MailMessage {
+class MailMessage extends BaseMailMessage {
 
 	public $subbuttons = [];
 	public $elements = [];
 	public $subcopy = '';
 	public $level = 'success';
+	public $user;
+
+	public function __construct($user = null) {
+		$this->user = $user;
+
+		$this->markdown('BetterNotifications::custom')
+			->greeting($this->greet());
+	}
+
+	public function greet() {
+		return __('mail.greeting', ['name' => $this->getUser()]);
+	}
+
+	private function getUser() {
+		if (!$this->user) {
+			return '';
+		}
+
+		if ($this->user->name) {
+			return $this->user->name;
+		}
+		if ($this->user->firstname && $this->user->lastname) {
+			return $this->user->firstname.' '.$this->user->lastname;
+		}
+
+		return '';
+	}
 
     /**
      * Get an array representation of the message.
@@ -28,17 +55,22 @@ class MailMessage extends MailMessage {
         ];
 	}
 
-	public function btnSuccess($action, $url) {
+	public function btnSuccess($url, $action) {
 		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'green', 'action' => $action];
 		return $this;
 	}
 
-	public function btnWarning($action, $url) {
+	public function btnWarning($url, $action) {
 		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'yellow', 'action' => $action];
 		return $this;
 	}
 
-	public function btnDanger($action, $url) {
+	public function btnPrimary($url, $action) {
+		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'action' => $action];
+		return $this;
+	}
+
+	public function btnDanger($url, $action) {
 		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'action' => $action];
 		return $this;
 	}
@@ -48,6 +80,8 @@ class MailMessage extends MailMessage {
 		$line = new Line();
 		call_user_func_array($callable, array(&$line));
 		$this->elements[] = ['type' => 'row', 'elements' => $line->elements];
+
+		return $this;
 	}
 
 	public function line($text) {
@@ -55,8 +89,8 @@ class MailMessage extends MailMessage {
 		return $this;
 	}
 
-	public function action($text, $url) {
-		$this->elements[] = ['type' => 'action', 'url' => $url, 'content' => $text, 'color' => 'green'];
+	public function action($url, $text) {
+		$this->elements[] = ['type' => 'action', 'url' => $url, 'content' => $text, 'color' => 'primary'];
 		return $this;
 	}
 
