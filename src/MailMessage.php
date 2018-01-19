@@ -11,16 +11,25 @@ class MailMessage extends BaseMailMessage {
 	public $subcopy = '';
 	public $level = 'success';
 	public $user;
+	public $heading = false;
 
 	public function __construct($user = null) {
 		$this->user = $user;
 
-		$this->markdown('BetterNotifications::custom')
+		$this->heading = config('app.name');
+
+		$this->markdown('BetterNotifications::views.custom')
 			->greeting($this->greet());
 	}
 
 	public function greet() {
 		return __('mail.greeting', ['name' => $this->getUser()]);
+	}
+
+	public function heading($heading) {
+		$this->heading = $heading;
+
+		return $this;
 	}
 
 	private function getUser() {
@@ -51,7 +60,8 @@ class MailMessage extends BaseMailMessage {
             'greeting' => $this->greeting,
             'salutation' => $this->salutation,
 			'elements' => $this->elements,
-			'subcopy' => $this->subcopy
+			'subcopy' => $this->subcopy,
+			'heading' => $this->heading
         ];
 	}
 
