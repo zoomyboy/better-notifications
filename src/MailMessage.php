@@ -95,7 +95,12 @@ class MailMessage extends BaseMailMessage {
 	}
 
 	public function line($text) {
-		$this->elements[] = ['type' => 'line', 'content' => $text];
+		$this->elements[] = ['type' => 'line', 'content' => $text, 'class' => 'no-paragraph'];
+		return $this;
+	}
+
+	public function paragraph($text) {
+        $this->elements[] = ['type' => 'line', 'content' => $text, 'class' => 'paragraph'];
 		return $this;
 	}
 
@@ -117,6 +122,12 @@ class MailMessage extends BaseMailMessage {
 
 	public function error() {
 		$this->level = 'danger';
+
+		return $this;
+	}
+
+	public function info() {
+		$this->level = 'info';
 
 		return $this;
 	}

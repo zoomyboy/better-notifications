@@ -111,6 +111,13 @@ img {
 	background-color: #f2dede;
 	border-bottom: 2px solid #ebccd1;
 }
+.header.header-info {
+	background-color: #cce5ff;
+	border-bottom: 2px solid #b8daff;
+}
+.header.header-info a {
+    color: #004085;
+}
 .header.header-danger a {
 	color: #a94442;
 }
@@ -312,6 +319,9 @@ img {
     text-align: center;
 }
 
-.row {
+.row.no-paragraph {
+	padding: 0;
+}
+.row.paragraph {
 	padding: 8px 0;
 }

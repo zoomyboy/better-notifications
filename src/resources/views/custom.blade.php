@@ -11,7 +11,7 @@
 
 {{-- Intro Lines --}}
 @foreach($elements as $element)
-<div class="row">
+<div class="row {{ $element['class'] ?? '' }}">
 @if($element['type'] == 'line')
 {!! $element['content'] !!}
 @endif
@@ -21,13 +21,15 @@
 @endcomponent
 @endif
 @if($element['type'] == 'row')
-<table width="100%" cellpadding="0" cellspacing="0" border="0"> <tr> <td align="center">
+<table width="100%" cellpadding="0" cellspacing="5" border="0">
 @foreach($element['elements'] as $subelement)
+<tr> <td align="center">
 @component('BetterNotifications::views.subbutton', ['element' => $subelement])
 {!! $subelement['action'] !!}
 @endcomponent
+</td> </tr>
 @endforeach
-</td> </tr> </table>
+</table>
 @endif
 </div>
 @endforeach
