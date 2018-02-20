@@ -65,23 +65,23 @@ class MailMessage extends BaseMailMessage {
         ];
 	}
 
-	public function btnSuccess($url, $action) {
-		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'green', 'action' => $action];
+	public function btnSuccess($url, $content) {
+		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'green', 'content' => $content, 'class' => 'row md-3'];
 		return $this;
 	}
 
-	public function btnWarning($url, $action) {
-		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'yellow', 'action' => $action];
+	public function btnWarning($url, $content) {
+		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'yellow', 'content' => $content, 'class' => 'row md-3'];
 		return $this;
 	}
 
-	public function btnPrimary($url, $action) {
-		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'action' => $action];
+	public function btnPrimary($url, $content) {
+		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'content' => $content, 'class' => 'row md-3'];
 		return $this;
 	}
 
-	public function btnDanger($url, $action) {
-		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'action' => $action];
+	public function btnDanger($url, $content) {
+		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'content' => $content, 'class' => 'row md-3'];
 		return $this;
 	}
 
@@ -105,7 +105,7 @@ class MailMessage extends BaseMailMessage {
 	}
 
 	public function action($url, $text) {
-		$this->elements[] = ['type' => 'action', 'url' => $url, 'content' => $text, 'color' => 'primary'];
+		$this->elements[] = ['type' => 'action', 'url' => $url, 'content' => $text, 'color' => 'primary', 'class' => 'row md-3'];
 		return $this;
 	}
 

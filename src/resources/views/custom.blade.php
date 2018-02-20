@@ -15,7 +15,7 @@
 @if($element['type'] == 'line')
 {!! $element['content'] !!}
 @endif
-@if($element['type'] == 'action')
+@if($element['type'] == 'button')
 @component('BetterNotifications::views.button', ['element' => $element])
 {!! $element['content'] !!}
 @endcomponent
@@ -38,7 +38,9 @@
 
 {{-- Salutation --}}
 @if(! empty($salutation))
+<div style="margin-top: 20px">
 {!! $salutation !!}
+</div>
 @endif
 
 @if ($subcopy)
