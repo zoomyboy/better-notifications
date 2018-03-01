@@ -3,49 +3,50 @@
 namespace Zoomyboy\BetterNotifications;
 
 use Illuminate\Notifications\Messages\MailMessage as BaseMailMessage;
+use Intervention\Image\Facades\Image;
 
 class MailMessage extends BaseMailMessage {
 
-	public $subbuttons = [];
-	public $elements = [];
-	public $subcopy = '';
-	public $level = 'success';
-	public $user;
-	public $heading = false;
+    public $subbuttons = [];
+    public $elements = [];
+    public $subcopy = '';
+    public $level = 'success';
+    public $user;
+    public $heading = false;
 
-	public function __construct($user = null) {
-		$this->user = $user;
+    public function __construct($user = null) {
+        $this->user = $user;
 
-		$this->heading = config('app.name');
+        $this->heading = config('app.name');
 
-		$this->markdown('BetterNotifications::views.custom')
-			->greeting($this->greet());
-	}
+        $this->markdown('BetterNotifications::views.custom')
+            ->greeting($this->greet());
+    }
 
-	public function greet() {
-		return __('mail.greeting', ['name' => $this->getUser()]);
-	}
+    public function greet() {
+        return __('mail.greeting', ['name' => $this->getUser()]);
+    }
 
-	public function heading($heading) {
-		$this->heading = $heading;
+    public function heading($heading) {
+        $this->heading = $heading;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	private function getUser() {
-		if (!$this->user) {
-			return '';
-		}
+    private function getUser() {
+        if (!$this->user) {
+            return '';
+        }
 
-		if ($this->user->name) {
-			return $this->user->name;
-		}
-		if ($this->user->firstname && $this->user->lastname) {
-			return $this->user->firstname.' '.$this->user->lastname;
-		}
+        if ($this->user->name) {
+            return $this->user->name;
+        }
+        if ($this->user->firstname && $this->user->lastname) {
+            return $this->user->firstname.' '.$this->user->lastname;
+        }
 
-		return '';
-	}
+        return '';
+    }
 
     /**
      * Get an array representation of the message.
@@ -59,88 +60,104 @@ class MailMessage extends BaseMailMessage {
             'subject' => $this->subject,
             'greeting' => $this->greeting,
             'salutation' => $this->salutation,
-			'elements' => $this->elements,
-			'subcopy' => $this->subcopy,
-			'heading' => $this->heading
+            'elements' => $this->elements,
+            'subcopy' => $this->subcopy,
+            'heading' => $this->heading,
+            'logo' => $this->parseLogoConfig(),
         ];
-	}
+    }
 
-	public function btnSuccess($url, $content) {
-		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'green', 'content' => $content, 'class' => 'row md-3'];
-		return $this;
-	}
+    public function btnSuccess($url, $content) {
+        $this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'green', 'content' => $content, 'class' => 'row md-3'];
+        return $this;
+    }
 
-	public function btnWarning($url, $content) {
-		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'yellow', 'content' => $content, 'class' => 'row md-3'];
-		return $this;
-	}
+    public function btnWarning($url, $content) {
+        $this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'yellow', 'content' => $content, 'class' => 'row md-3'];
+        return $this;
+    }
 
-	public function btnPrimary($url, $content) {
-		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'content' => $content, 'class' => 'row md-3'];
-		return $this;
-	}
+    public function btnPrimary($url, $content) {
+        $this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'blue', 'content' => $content, 'class' => 'row md-3'];
+        return $this;
+    }
 
-	public function btnDanger($url, $content) {
-		$this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'content' => $content, 'class' => 'row md-3'];
-		return $this;
-	}
+    public function btnDanger($url, $content) {
+        $this->elements[] = ['type' => 'button', 'url' => $url, 'color' => 'red', 'content' => $content, 'class' => 'row md-3'];
+        return $this;
+    }
 
-	public function buttonline($callable) {
-		$buttons = [];
-		$line = new Line();
-		call_user_func_array($callable, array(&$line));
-		$this->elements[] = ['type' => 'row', 'elements' => $line->elements];
+    public function buttonline($callable) {
+        $buttons = [];
+        $line = new Line();
+        call_user_func_array($callable, array(&$line));
+        $this->elements[] = ['type' => 'row', 'elements' => $line->elements];
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function line($text) {
-		$this->elements[] = ['type' => 'line', 'content' => $text, 'class' => 'no-paragraph'];
-		return $this;
-	}
+    public function line($text) {
+        $this->elements[] = ['type' => 'line', 'content' => $text, 'class' => 'no-paragraph'];
+        return $this;
+    }
 
-	public function paragraph($text) {
+    public function paragraph($text) {
         $this->elements[] = ['type' => 'line', 'content' => $text, 'class' => 'paragraph'];
-		return $this;
-	}
+        return $this;
+    }
 
-	public function action($url, $text) {
-		$this->elements[] = ['type' => 'action', 'url' => $url, 'content' => $text, 'color' => 'primary', 'class' => 'row md-3'];
-		return $this;
-	}
+    public function action($url, $text) {
+        $this->elements[] = ['type' => 'action', 'url' => $url, 'content' => $text, 'color' => 'primary', 'class' => 'row md-3'];
+        return $this;
+    }
 
-	public function subcopy($subcopy) {
-		$this->subcopy = $subcopy;
-		return $this;
-	}
+    public function subcopy($subcopy) {
+        $this->subcopy = $subcopy;
+        return $this;
+    }
 
-	public function salutation($salutation) {
-		$this->salutation = $salutation;
+    public function salutation($salutation) {
+        $this->salutation = $salutation;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function error() {
-		$this->level = 'danger';
+    public function error() {
+        $this->level = 'danger';
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function info() {
-		$this->level = 'info';
+    public function info() {
+        $this->level = 'info';
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function success() {
-		$this->level = 'success';
+    public function success() {
+        $this->level = 'success';
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function warning() {
-		$this->level = 'warning';
+    public function warning() {
+        $this->level = 'warning';
 
-		return $this;
-	}
+        return $this;
+    }
+
+    public function parseLogoConfig() {
+        $logoPath = config('better-notifications.headerLogo');
+        if(is_null($logoPath) || !\Storage::disk('public')->exists($logoPath)) {
+            return null;
+        }
+
+        $img = Image::make(\Storage::disk('public')->get($logoPath));
+
+        return [
+            'url' => \Storage::disk('public')->url($logoPath),
+            'width' => $img->width(),
+            'height' => $img->height()
+        ];
+    }
 }

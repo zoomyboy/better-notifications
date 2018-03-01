@@ -1,7 +1,7 @@
 @component('mail::layout')
     {{-- Header --}}
     @slot('header')
-        @component('BetterNotifications::views.header', ['url' => config('app.url'), 'class' => ($level) ?: 'default'])
+        @component('BetterNotifications::views.header', ['url' => config('app.url'), 'class' => ($level) ?: 'default', 'logo' => $logo])
             {{ $heading }}
         @endcomponent
     @endslot

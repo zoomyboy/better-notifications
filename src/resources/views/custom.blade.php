@@ -1,6 +1,7 @@
 @component('BetterNotifications::views.message', [
-	'level' => $level,
-	'heading' => $heading
+    'level' => $level,
+    'heading' => $heading,
+    'logo' => $logo
 ])
 {{-- Greeting --}}
 @if (! empty($greeting))
